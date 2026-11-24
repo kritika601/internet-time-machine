@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Time Machine</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+
+    <div class="container">
+
+        <header>
+            <h2>TIME MACHINE</h2>
+            <p>EXPLORE THE PAST</p>
+        </header>
+
+        
+
+    
+    <main class="page-content">
+
+        <section class="hero">
+
+            <!-- LEFT: INTRODUCTION AND TIME VISUAL -->
+            <div class="hero-left">
+
+                <div class="eyebrow">
+                    <span class="live-dot"></span>
+                    INTERNET ARCHIVE SYSTEM
+                    <span class="eyebrow-line"></span>
+                    EST. 1995
+                </div>
+
+                <h1>
+                    The Internet
+                    <span class="gradient-text">Reimagined.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Websites disappear. Memories shouldn't.
+                    Journey through the digital past and discover
+                    how the world wide web used to look.
+                </p>
+
+                <div class="hero-actions">
+                    <span class="action-number">01</span>
+                    <span>Choose your destination</span>
+                    <span class="action-divider"></span>
+                    <span class="action-number">02</span>
+                    <span>Travel through time</span>
+                </div>
+
+                <!-- TIME MACHINE VISUAL -->
+                <div class="time-visual">
+
+                    <div class="orbit orbit-one"></div>
+                    <div class="orbit orbit-two"></div>
+                    <div class="orbit orbit-three"></div>
+
+                    <div class="orbit-core">
+                        <div class="core-inner">
+                            <span class="core-icon">◈</span>
+                            <span class="core-year" id="orbit-year">2005</span>
+                            <span class="core-caption">TIME DESTINATION</span>
+                        </div>
+                    </div>
+
+                    <div class="orbit-point point-one"></div>
+                    <div class="orbit-point point-two"></div>
+                    <div class="orbit-point point-three"></div>
+
+                    <div class="floating-label label-top">
+                        <span>PAST SIGNAL</span>
+                        <strong>CONNECTED</strong>
+                    </div>
+
+                    <div class="floating-label label-bottom">
+                        <span>TIME RANGE</span>
+                        <strong>1995 — 2025</strong>
+                    </div>
+
+                </div>
+
+                <div class="hero-footer">
+                    <span>30 YEARS OF THE WEB</span>
+                    <span class="footer-line"></span>
+                    <span>ONE JOURNEY THROUGH TIME</span>
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT: TIME TRAVEL CONSOLE -->
+            <div class="console-wrapper">
+
+                <div class="console-glow"></div>
+
+                <div class="search-box">
+
+                    <div class="console-topbar">
+
+                        <div class="window-controls">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+
+                        <span class="console-id">TEMPORAL INTERFACE / 001</span>
+
+                        <span class="console-status">
+                            <span class="live-dot"></span>
+                            ONLINE
+                        </span>
+
+                    </div>
+
+                    <div class="console-content">
+
+                        <div class="console-heading">
+                            <div>
+                                <span class="section-index">01 / DESTINATION</span>
+                                <h2>Where to?</h2>
+                            </div>
+
+                            <span class="heading-symbol">◈</span>
+                        </div>
+
+                        <label for="website">ENTER WEBSITE ADDRESS</label>
+
+                        <div class="input-wrapper">
+                            <span class="input-icon">⌘</span>
+                            <input
+                                type="text"
+                                id="website"
+                                placeholder="www.google.com"
+                            >
+                            <span class="input-extension">URL</span>
+                        </div>
+
+
+                        <div class="console-heading year-heading">
+                            <div>
+                                <span class="section-index">02 / TIME COORDINATES</span>
+                                <h2>Select your year</h2>
+                            </div>
+
+                            <div class="year-display">
+                                <span id="selected-year">2005</span>
+                                <small>YEAR</small>
+                            </div>
+                        </div>
+
+                        <div class="timeline-wrapper">
+
+                            <div class="timeline-track">
+                                <input
+                                    type="range"
+                                    id="year"
+                                    min="1995"
+                                    max="2025"
+                                    value="2005"
+                                >
+                            </div>
+
+                            <div class="timeline-milestones">
+                                <span>1995</span>
+                                <span>2000</span>
+                                <span>2005</span>
+                                <span>2010</span>
+                                <span>2015</span>
+                                <span>2020</span>
+                                <span>2025</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="destination-summary">
+                            <span class="summary-icon">◷</span>
+                            <div>
+                                <span class="summary-label">YOUR DESTINATION</span>
+                                <strong>World Wide Web / <span id="destination-year">2005</span></strong>
+                            </div>
+                            <span class="summary-arrow">◉</span>
+                        </div>
+
+
+                        <button id="travel-button">
+                            <span>INITIATE TIME TRAVEL</span>
+                            <span class="button-arrow">→</span>
+                        </button>
+
+                        <p id="result-message"></p>
+
+
+                        <div class="console-bottom">
+                            <span>POWERED BY WAYBACK MACHINE</span>
+                            <span>SYS. READY</span>
+                        </div>
+
+
+                        <!-- ARCHIVED WEBSITE -->
+                        <div id="snapshot-container">
+
+                            <div class="snapshot-heading">
+                                <span class="section-index">03 / ARCHIVED DESTINATION</span>
+                                <h2>You've arrived.</h2>
+                            </div>
+
+                            <p id="snapshot-date"></p>
+
+                            <p id="loading-message">
+                                Loading archived website...
+                            </p>
+
+                            <iframe
+                                id="snapshot-frame"
+                                scrolling="yes"
+                                allow="fullscreen"
+                            ></iframe>
+
+                            <p>
+                                <a id="open-snapshot" target="_blank">
+                                    Open archived website in a new tab →
+                                </a>
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+
+    </div>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
