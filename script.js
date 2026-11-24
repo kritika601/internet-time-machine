@@ -76,7 +76,10 @@ async function travelToPast() {
             snapshotContainer.style.display = "block";
 
             loadingMessage.style.display = "block";
-            snapshotFrame.src = snapshot.url;
+            snapshotFrame.src = snapshotUrl.replace(
+                "http://web.archive.org",
+                "https://web.archive.org"
+            );
 
             // Display the actual capture date
             const timestamp = snapshot.timestamp;
@@ -89,7 +92,10 @@ async function travelToPast() {
             snapshotDate.textContent = "Archived on: " + formattedDate;
 
             // Add a link to open it separately
-            openSnapshot.href = snapshot.url;
+            openSnapshot.href = snapshotUrl.replace(
+                "http://web.archive.org",
+                "https://web.archive.org"
+            );
 
         } else {
 
