@@ -71,15 +71,16 @@ async function travelToPast() {
 
             console.log("Snapshot URL:", snapshot.url);
             console.log("Capture date:", snapshot.timestamp);
+            const snapshotUrl = snapshot.url.replace(
+                "http://web.archive.org",
+                "https://web.archive.org"
+            );
 
             // Display the archived website
             snapshotContainer.style.display = "block";
 
             loadingMessage.style.display = "block";
-            snapshotFrame.src = snapshotUrl.replace(
-                "http://web.archive.org",
-                "https://web.archive.org"
-            );
+            snapshotFrame.src = snapshotUrl;
 
             // Display the actual capture date
             const timestamp = snapshot.timestamp;
@@ -92,10 +93,7 @@ async function travelToPast() {
             snapshotDate.textContent = "Archived on: " + formattedDate;
 
             // Add a link to open it separately
-            openSnapshot.href = snapshotUrl.replace(
-                "http://web.archive.org",
-                "https://web.archive.org"
-            );
+            openSnapshot.href = snapshotUrl;
 
         } else {
 
