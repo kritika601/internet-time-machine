@@ -177,7 +177,7 @@ searchBox.addEventListener("keydown", function(event) {
 
 async function getSnapshots(website, year) {
 
-    const apiUrl = `https://internet-time-machine-api.guptakritika614.workers.dev/?url=${encodeURIComponent(website)}&year=${year}`;
+    const apiUrl = `https://internet-time-machine-api.xxxxxxxx.workers.dev/?url=${encodeURIComponent(website)}&year=${year}`;
 
     try {
 
