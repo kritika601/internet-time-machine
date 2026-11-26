@@ -33,6 +33,7 @@ yearSlider.addEventListener("input", function() {
 
     orbitCore.classList.add("pulse");
 
+
 });
 
 
@@ -56,33 +57,49 @@ async function travelToPast() {
 
     try {
 
-        const response = await fetch(apiUrl);
+        const snapshots = await getSnapshots(website, year);
 
-        const data = await response.json();
+        console.log("Snapshots retrieved:", snapshots);
+        console.log("Total snapshots:", snapshots.length);
 
-        console.log("API Response:", data);
-
-        const snapshot = data.archived_snapshots.closest;
-
+        if (snapshots.length === 0) {
+            resultMessage.textContent = "No archived versions found for this year.";
+            snapshotContainer.style.display = "none";
+            return;
+        }
         
-        if (snapshot) {
+        resultMessage.textContent = `${snapshots.length} archived versions found!`;
 
-            resultMessage.textContent = "Great! An archived version was found.";
+        snapshotContainer.style.display = "block";
+        loadingMessage.style.display = "none";
 
-            console.log("Snapshot URL:", snapshot.url);
-            console.log("Capture date:", snapshot.timestamp);
-            const snapshotUrl = snapshot.url.replace(
-                "http://web.archive.org",
-                "https://web.archive.org"
-            );
+        // Create the timeline container if it doesn't exist
+        let timeline = document.getElementById("snapshot-timeline");
 
-            // Display the archived website
-            snapshotContainer.style.display = "block";
+        if (!timeline) {
+            timeline = document.createElement("div");
+            timeline.id = "snapshot-timeline";
+            snapshotDate.insertAdjacentElement("afterend", timeline);
+        }
 
-            loadingMessage.style.display = "block";
-            snapshotFrame.src = snapshotUrl;
+        timeline.innerHTML = `
+            <div class="timeline-header">
+                <div>
+                    <span class="section-index">04 / ARCHIVE TIMELINE</span>
+                    <h3>Explore the past</h3>
+                </div>
+                <span class="snapshot-count">${snapshots.length} CAPTURES</span>
+            </div>
 
-            // Display the actual capture date
+            <div class="timeline-scroll">
+                <div class="snapshot-track"></div>
+                <div class="timeline-markers"></div>
+            </div>
+        `;
+
+        // Create one button for every archived snapshot
+        snapshots.forEach((snapshot, index) => {
+
             const timestamp = snapshot.timestamp;
 
             const formattedDate =
@@ -90,18 +107,45 @@ async function travelToPast() {
                 timestamp.substring(4, 6) + "-" +
                 timestamp.substring(6, 8);
 
-            snapshotDate.textContent = "Archived on: " + formattedDate;
+            const button = document.createElement("button");
 
-            // Add a link to open it separately
-            openSnapshot.href = snapshotUrl;
+            const monthNames = [
+                "JAN", "FEB", "MAR", "APR",
+                "MAY", "JUN", "JUL", "AUG",
+                "SEP", "OCT", "NOV", "DEC"
+            ];
 
-        } else {
+            const month = Number(timestamp.substring(4, 6));
+            button.textContent = monthNames[month - 1];
 
-            resultMessage.textContent = "No archived version found near this year.";
+            button.addEventListener("click", function() {
 
-            snapshotContainer.style.display = "none";
+            timeline.querySelectorAll("button").forEach(btn => {
+                btn.classList.remove("active");
+            });
 
-        }
+            button.classList.add("active");
+
+                const snapshotUrl =
+                    `https://web.archive.org/web/${timestamp}/${snapshot.original}`;
+
+                snapshotDate.textContent = "Archived on: " + formattedDate;
+
+                loadingMessage.style.display = "block";
+                snapshotFrame.src = snapshotUrl;
+
+                openSnapshot.href = snapshotUrl;
+
+            });
+
+            timeline.querySelector(".timeline-markers").appendChild(button);
+
+            // Automatically load the first snapshot
+            if (index === 0) {
+                button.click();
+            }
+
+        });
 
 
     } catch (error) {
@@ -128,5 +172,44 @@ searchBox.addEventListener("keydown", function(event) {
     }
 
 });
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+async function getSnapshots(website, year) {
+
+    const apiUrl = `https://internet-time-machine-api.xxxxxx.workers.dev/?url=${encodeURIComponent(website)}&year=${year}`;
+
+    try {
+
+        const response = await fetch(apiUrl);
+
+        if (!response.ok) {
+            throw new Error("Could not retrieve archived snapshots.");
+        }
+
+        const data = await response.json();
+
+        // The first row contains column names, not a snapshot.
+        const snapshots = data.slice(1);
+
+        return snapshots.map(snapshot => {
+
+            return {
+                timestamp: snapshot[0],
+                original: snapshot[1],
+                status: snapshot[2]
+            };
+
+        });
+
+    } catch (error) {
+
+        console.error("Snapshot retrieval error:", error);
+        throw error;
+
+    }
+
+}
+
 
 
