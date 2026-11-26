@@ -3,9 +3,7 @@
 
 **Travel back in time and explore how websites looked in the past.**
 
-Internet Time Machine is a web application that allows users to revisit archived versions of websites from different years. By entering a website URL and selecting a year, users can discover how the website appeared during that period using historical snapshots preserved by the Internet Archive's Wayback Machine.
-
-The project combines a simple, interactive interface with the Wayback Machine Availability API to make exploring the history of the internet accessible and engaging.
+Internet Time Machine is a web application that allows users to revisit archived versions of websites from different years. By entering a website URL and selecting a year, users can explore historical snapshots preserved by the Internet Archive's Wayback Machine.
 
 **Live Demo:** https://kritika601.github.io/internet-time-machine/
 
@@ -13,119 +11,154 @@ The project combines a simple, interactive interface with the Wayback Machine Av
 
 ## Features
 
-- **Explore Historical Websites:** Visit archived versions of websites from different years.
-- **Interactive Year Selector:** Choose a destination year using an interactive timeline slider.
-- **Dynamic Time Machine Interface:** Watch the central year indicator update as you change your selected year.
-- **Archive Discovery:** Automatically retrieves the closest available archived snapshot for the selected year.
-- **Embedded Website Preview:** Explore archived websites directly within the application.
-- **Direct Archive Access:** Open an archived snapshot in a separate browser tab.
-- **Loading and Status Feedback:** Get feedback while searching for archived snapshots and loading websites.
-- **Responsive Design:** Interface adapts to desktop, tablet, and mobile screen sizes.
+- **Explore Historical Websites:** Enter any website URL and select a year to discover its archived versions.
+- **Multiple Snapshots:** Retrieve multiple archived captures from the selected year instead of just the closest available snapshot.
+- **Interactive Archive Timeline:** Browse available captures through a visual monthly timeline.
+- **Date-Based Navigation:** Select a timeline marker to load the corresponding archived version.
+- **Live Preview:** View archived websites directly within the application using an embedded iframe.
+- **Direct Access:** Open the selected archived snapshot in a new browser tab.
+- **Responsive Design:** Interface adapts to different screen sizes.
+
+---
 
 ## How to Use
 
 1. Open the [Internet Time Machine](https://kritika601.github.io/internet-time-machine/).
-2. Enter the URL of the website you want to explore (for example, `www.google.com`).
-3. Use the year slider to select a year between 1995 and 2025.
-4. Click **Initiate Time Travel**.
-5. The application searches the Internet Archive for the closest available snapshot near your selected year.
-6. If an archived version is found, it is displayed within the application.
-7. Use the external link to open the archived website in a separate tab.
+2. Enter the URL of the website you want to explore.
+3. Select a year using the year slider.
+4. Click **Travel Back in Time**.
+5. Wait for the application to retrieve available archived captures.
+6. Browse the interactive timeline and select a month.
+7. Explore the selected archived version in the preview window.
 
-**Note:** The Wayback Machine may return the closest available snapshot rather than an exact match for the selected date. Some archived websites may not load completely because of missing resources, unavailable content, or restrictions imposed by the original website or the archive.
+---
 
 ## Technology Stack
 
 | Technology | Purpose |
 |---|---|
-| HTML5 | Application structure and content |
-| CSS3 | Styling, layouts, animations, and responsive design |
-| JavaScript (ES6+) | Application logic, event handling, and API integration |
-| Wayback Machine Availability API | Finding historical website snapshots |
-| Fetch API | Making asynchronous HTTP requests |
-| Git & GitHub | Version control and source code hosting |
-| GitHub Pages | Free static website hosting |
+| HTML5 | Application structure |
+| CSS3 | Styling, animations, and responsive layout |
+| JavaScript | Application logic and dynamic UI updates |
+| Fetch API | Making asynchronous API requests |
+| Wayback Machine CDX API | Retrieving historical website snapshots |
+| Cloudflare Workers | Proxying API requests and handling CORS |
+| GitHub Pages | Hosting and deployment |
+
+---
 
 ## API Integration
 
-The application uses the Internet Archive's Wayback Machine Availability API.
+This project uses the **Internet Archive's Wayback Machine CDX Server API** to retrieve historical snapshots of websites.
 
-**API Endpoint:**
+### CDX Server API
 
-```text
-https://archive.org/wayback/available/
-```
+The API endpoint used is:
 
-The application sends the website URL and selected year as query parameters.
+`https://web.archive.org/cdx/search/cdx`
 
-Example:
+The request includes parameters such as:
 
-```text
-https://archive.org/wayback/available/?url=google.com&timestamp=20050101
-```
+- `url`: Website whose archived versions are requested.
+- `from` and `to`: Define the year to search within.
+- `output=json`: Requests the response in JSON format.
+- `fl=timestamp,original,statuscode`: Specifies the fields returned.
+- `filter=statuscode:200`: Filters for successful captures.
+- `collapse=timestamp:6`: Groups captures by day, helping reduce duplicate entries.
+- `limit=100`: Limits the number of returned records.
 
-The API returns information about the closest available archived snapshot, including its URL and capture timestamp.
+The API returns a list of archived captures, including their timestamps, original URLs, and HTTP status codes.
 
-The application then:
+### Cloudflare Worker Proxy
 
-1. Extracts the closest available snapshot from the API response.
-2. Retrieves the archived URL and capture date.
-3. Displays the archived website using an HTML iframe.
-4. Provides a direct link to the archived version.
+To handle cross-origin restrictions (CORS) when accessing the CDX API from the browser, the project uses a Cloudflare Worker as a lightweight API proxy.
 
-No API key or paid subscription is required.
+The Worker:
+
+1. Receives the website URL and selected year from the frontend.
+2. Validates the request parameters.
+3. Constructs a request to the Wayback Machine CDX API.
+4. Fetches the archived snapshot data.
+5. Returns the response with appropriate CORS headers.
+
+This allows the frontend to communicate with the archive API without making the CDX request directly from the browser.
+
+---
+
+## Application Workflow
+
+1. The user enters a website URL and selects a year.
+2. JavaScript sends a request to the Cloudflare Worker.
+3. The Worker retrieves matching archived captures from the CDX API.
+4. The frontend processes the returned JSON data.
+5. JavaScript dynamically generates an interactive timeline using the available captures.
+6. Selecting a timeline marker loads that particular archived version into the iframe.
+7. The user can also open the selected snapshot directly in a new tab.
+
+---
 
 ## Project Structure
 
 ```text
 internet-time-machine/
 │
-├── index.html      # Application structure
-├── style.css       # Styling and responsive layouts
-├── script.js       # Application logic and API integration
-└── README.md       # Project documentation
+├── index.html       # Application structure
+├── style.css        # Styling and responsive design
+├── script.js        # Application logic and API integration
+└── README.md        # Project documentation
 ```
 
-## Skills Demonstrated
-
-This project provided hands-on experience with:
-
-- **Frontend Development:** Building a complete web application using HTML, CSS, and JavaScript.
-- **DOM Manipulation:** Selecting and dynamically updating HTML elements using JavaScript.
-- **Event Handling:** Managing user interactions through event listeners.
-- **Asynchronous JavaScript:** Using async/await and Promises to handle API requests.
-- **REST API Integration:** Fetching and processing data from an external API.
-- **Error Handling:** Managing unsuccessful requests, missing snapshots, and loading states.
-- **Responsive Web Design:** Creating layouts that adapt to different screen sizes.
-- **CSS Animations:** Implementing transitions, animated elements, and visual effects.
-- **Deployment:** Publishing a static website using GitHub Pages.
-- **Debugging:** Identifying and resolving issues across local and deployed environments.
-
-## Limitations
-
-- Archived snapshots are dependent on the availability of captures in the Internet Archive.
-- The closest available snapshot may not correspond to the exact year or date selected.
-- Some websites may restrict embedding or may not render correctly within an iframe.
-- Archived pages may contain broken links, missing images, or unavailable scripts.
-- The application currently supports searching within the configured year range of 1995–2025.
-
-## Future Improvements
-
-Potential enhancements include:
-
-- Displaying multiple available snapshots for a selected year.
-- Adding a timeline of available capture dates.
-- Allowing users to navigate between different snapshots.
-- Improving error messages when websites cannot be embedded.
-- Adding a random website discovery feature.
-- Supporting a wider historical date range.
-
-## Acknowledgements
-
-- [Internet Archive](https://archive.org/) for preserving historical web content.
-- [Wayback Machine](https://web.archive.org/) for providing access to archived websites.
-- [GitHub Pages](https://pages.github.com/) for free static website hosting.
+The Cloudflare Worker is deployed separately and acts as the backend proxy for the application. Its code is present in the ext folder for reference.
 
 ---
 
-**Built as a hands-on web development project to explore frontend development, API integration, responsive design, and the history of the internet.**
+## Learning Outcomes
+
+This project provided hands-on experience with:
+
+- Building interactive web applications using HTML, CSS, and JavaScript.
+- DOM manipulation and dynamic element creation.
+- Handling user input and browser events.
+- Asynchronous JavaScript using `async/await`.
+- Making API requests using the Fetch API.
+- Working with REST APIs and JSON responses.
+- Understanding CORS and cross-origin requests.
+- Building and deploying serverless functions using Cloudflare Workers.
+- Implementing responsive layouts and CSS animations.
+- Deploying a static website using GitHub Pages.
+- Debugging API integration and frontend issues.
+
+---
+
+## Limitations
+
+- Archived snapshots are available only when the Internet Archive has crawled and preserved the website.
+- Some years may have no archived captures.
+- The number of available snapshots varies depending on the website and year.
+- Archived websites may not render perfectly because some resources, scripts, or images may no longer be available.
+- Some websites restrict embedding in iframes, so they may not display correctly within the application.
+- The application depends on the availability of the Internet Archive CDX API and the Cloudflare Worker.
+
+---
+
+## Future Improvements
+
+- Allow users to explore snapshots at a more detailed level, including exact capture dates and times.
+- Improve the timeline with more detailed date navigation.
+- Add a random website discovery feature.
+- Expand the selectable year range.
+- Improve error handling for websites that cannot be displayed in an iframe.
+- Allow users to compare archived versions from different years side by side.
+
+---
+
+## Acknowledgements
+
+- [Internet Archive](https://archive.org/) for preserving historical versions of websites.
+- [Wayback Machine](https://web.archive.org/) for providing access to archived web pages.
+- [Cloudflare Workers](https://workers.cloudflare.com/) for serverless request handling.
+- [GitHub Pages](https://pages.github.com/) for hosting the application.
+
+---
+
+**Built as a hands-on project to explore web development, APIs, and the history of the internet.**
